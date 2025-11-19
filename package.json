@@ -1,5 +1,5 @@
 {
-  "name": "toodo",
+  "name": "mcp-server-toodo",
   "module": "index.ts",
   "bin": "index.ts",
   "type": "module",
