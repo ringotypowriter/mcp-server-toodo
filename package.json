@@ -1,6 +1,7 @@
 {
   "name": "toodo",
   "module": "index.ts",
+  "bin": "index.ts",
   "type": "module",
   "private": true,
   "devDependencies": {
