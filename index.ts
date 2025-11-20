@@ -3,6 +3,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 import { TodoManager } from "./src/todoManager.js";
+import { TrayManager } from "./src/trayManager.js";
 
 const server = new McpServer({
     name: "toodo",
@@ -10,6 +11,17 @@ const server = new McpServer({
 });
 
 const todoManager = new TodoManager();
+const trayManager = new TrayManager(todoManager);
+
+// Graceful shutdown
+process.on('SIGINT', async () => {
+    await trayManager.cleanup();
+    process.exit(0);
+});
+process.on('SIGTERM', async () => {
+    await trayManager.cleanup();
+    process.exit(0);
+});
 
 server.tool(
     "create_todo",

@@ -5,6 +5,7 @@
       "name": "toodo",
       "dependencies": {
         "@modelcontextprotocol/sdk": "^1.22.0",
+        "traykit-bindings": "^0.1.2",
         "zod": "^3.23.8",
       },
       "devDependencies": {
@@ -183,6 +184,8 @@
     "statuses": ["statuses@2.0.2", "https://registry.npmmirror.com/statuses/-/statuses-2.0.2.tgz", {}, "sha512-DvEy55V3DB7uknRo+4iOGT5fP1slR8wQohVdknigZPMpMstaKJQWhwiYBACJE3Ul2pTnATihhBYnRhZQHGBiRw=="],
 
     "toidentifier": ["toidentifier@1.0.1", "https://registry.npmmirror.com/toidentifier/-/toidentifier-1.0.1.tgz", {}, "sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA=="],
+
+    "traykit-bindings": ["traykit-bindings@0.1.2", "https://registry.npmmirror.com/traykit-bindings/-/traykit-bindings-0.1.2.tgz", { "peerDependencies": { "typescript": "^5" } }, "sha512-m0cXQPGx1v5TGRHRgr2SJzr10ZzTpg43F4GLLk1mLwc1by3Wvo1gwvYrWNVq/G62Y2JgyJF2xmi1aOxYLcRRNg=="],
 
     "type-is": ["type-is@2.0.1", "https://registry.npmmirror.com/type-is/-/type-is-2.0.1.tgz", { "dependencies": { "content-type": "^1.0.5", "media-typer": "^1.1.0", "mime-types": "^3.0.0" } }, "sha512-OZs6gsjF4vMp32qrCbiVSkrFmXtG/AZhY3t0iAMrMBiAZyV9oALtXO8hsrHbMXF9x6L3grlFuwW2oAz7cav+Gw=="],
 
