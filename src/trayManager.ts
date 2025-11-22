@@ -29,11 +29,11 @@ export class TrayManager {
 
         try {
             const todos = await this.todoManager.listTodos();
-            console.log(`[TrayManager] Found ${todos.length} todos`);
+            console.error(`[TrayManager] Found ${todos.length} todos`);
 
             if (todos.length === 0) {
                 // No todos - hide tray
-                console.log('[TrayManager] No todos, hiding tray');
+                console.error('[TrayManager] No todos, hiding tray');
                 if (this.client) {
                     await this.client.hide();
                     this.client = null;
@@ -44,11 +44,12 @@ export class TrayManager {
             // Always recreate client to ensure clean state
             if (this.client) {
                 await this.client.hide();
+                this.client = null;
             }
 
             // Show top 3 most recently updated todos
             const topTodos = todos.slice(0, 3);
-            console.log(`[TrayManager] Creating tray with ${topTodos.length} todos`);
+            console.error(`[TrayManager] Creating tray with ${topTodos.length} todos`);
 
             const initialConfig = {
                 icon: {
@@ -61,12 +62,13 @@ export class TrayManager {
 
             this.client = TrayKit.createClient({
                 configJson: JSON.stringify(initialConfig),
-                debug: true
+                // 关闭 stdout 调试输出，避免污染 MCP 的 JSON 通道
+                debug: false
             });
 
             await this.populateMenu(this.client, topTodos, todos.length);
 
-            console.log('[TrayManager] Tray created successfully');
+            console.error('[TrayManager] Tray created successfully');
         } catch (error) {
             console.error('[TrayManager] Error updating tray:', error);
             // Don't throw, just log, so the server keeps running
@@ -107,7 +109,7 @@ export class TrayManager {
         await client.addAction({
             title: '刷新',
             onClick: () => {
-                console.log('[TrayManager] Refresh clicked');
+                console.error('[TrayManager] Refresh clicked');
                 void this.updateTray();
             }
         });
@@ -115,7 +117,7 @@ export class TrayManager {
         await client.addAction({
             title: '隐藏',
             onClick: async () => {
-                console.log('[TrayManager] Hide clicked');
+                console.error('[TrayManager] Hide clicked');
                 await this.cleanup();
             }
         });

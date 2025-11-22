@@ -134,5 +134,64 @@ server.tool(
     }
 );
 
+server.tool(
+    "list_todos",
+    {},
+    async () => {
+        try {
+            const todos = await todoManager.listTodos();
+
+            if (todos.length === 0) {
+                return {
+                    content: [{ type: "text", text: "目前没有可用的 todo。" }],
+                };
+            }
+
+            let text = "# 当前可用的 todos\n\n";
+            todos.forEach((todo, index) => {
+                const completedSteps = todo.steps.filter(s => s.completed).length;
+                const totalSteps = todo.steps.length;
+                text += `${index}. ${todo.name} [${completedSteps}/${totalSteps}]\n`;
+                text += `   创建时间: ${new Date(todo.createdAt).toLocaleString()}\n`;
+                text += `   最近更新: ${new Date(todo.lastUpdatedAt).toLocaleString()}\n`;
+                text += `   过期时间: ${new Date(todo.expiresAt).toLocaleString()}\n\n`;
+            });
+
+            return {
+                content: [{ type: "text", text }],
+            };
+        } catch (error: any) {
+            return {
+                content: [{ type: "text", text: error.message }],
+                isError: true,
+            };
+        }
+    }
+);
+
+server.tool(
+    "delete_todo",
+    { name: z.string() },
+    async ({ name }) => {
+        try {
+            await todoManager.delete(name);
+            return {
+                content: [{ type: "text", text: `Todo '${name}' deleted.` }],
+            };
+        } catch (error: any) {
+            return {
+                content: [{ type: "text", text: error.message }],
+                isError: true,
+            };
+        }
+    }
+);
+
 const transport = new StdioServerTransport();
 await server.connect(transport);
+
+// Keep event loop alive for TrayKit
+// MCP server uses stdio which may not keep the event loop busy enough
+setInterval(() => {
+    // This ensures TrayKit's event loop can run
+}, 1000);

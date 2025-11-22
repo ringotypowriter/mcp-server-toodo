@@ -216,4 +216,17 @@ export class TodoManager extends EventEmitter {
         // Sort by lastUpdatedAt descending (most recent first)
         return todos.sort((a, b) => b.lastUpdatedAt - a.lastUpdatedAt);
     }
+
+    async delete(name: string): Promise<void> {
+        const filePath = this.getFilePath(name);
+        try {
+            await fs.unlink(filePath);
+            this.emit('change');
+        } catch (error: any) {
+            if (error.code === 'ENOENT') {
+                throw new Error(`Todo '${name}' not found.`);
+            }
+            throw error;
+        }
+    }
 }
