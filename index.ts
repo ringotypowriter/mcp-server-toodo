@@ -11,6 +11,7 @@ const server = new McpServer({
 });
 
 const todoManager = new TodoManager();
+console.error("[TrayManager] about to create TrayKit client");
 const trayManager = new TrayManager(todoManager);
 
 // Graceful shutdown
