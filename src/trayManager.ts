@@ -39,12 +39,7 @@ export class TrayManager {
 
   private async resetMenu(client: TrayClient): Promise<void> {
     try {
-      const state: any = await client.list();
-      const items = Array.isArray(state?.items) ? state.items : [];
-
-      for (let i = items.length - 1; i >= 0; i--) {
-        await client.removeItem(i);
-      }
+      await client.clearItems();
     } catch (error) {
       console.error("[TrayManager] Failed to reset menu:", error);
     }
