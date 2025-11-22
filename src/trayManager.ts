@@ -76,10 +76,6 @@ export class TrayManager {
     }
 
     private async populateMenu(client: TrayClient, todos: Todo[], totalCount: number): Promise<void> {
-        // Header
-        await client.addText({ title: `🎯 Toodo (${totalCount} 个待办)` });
-        await client.addText({ title: '─────────────────', is_separator: true });
-
         // Display top 3 todos with their steps
         for (let i = 0; i < todos.length; i++) {
             const todo = todos[i]!;
@@ -87,12 +83,12 @@ export class TrayManager {
             const totalSteps = todo.steps.length;
 
             // Todo title with progress
-            await client.addText({ title: `📝 ${todo.name} (${completedSteps}/${totalSteps})` });
+            await client.addText({ title: `${todo.name} [${completedSteps}/${totalSteps}]` });
 
             // Display steps
             if (todo.steps.length > 0) {
                 for (const step of todo.steps) {
-                    const icon = step.completed ? '✅' : '⬜';
+                    const icon = step.completed ? '[✓]' : '[ ]';
                     await client.addText({ title: `  ${icon} ${step.description}` });
                 }
             } else {
@@ -101,15 +97,15 @@ export class TrayManager {
 
             // Add separator between todos (except after last one)
             if (i < todos.length - 1) {
-                await client.addText({ title: '─────────────────', is_separator: true });
+                await client.addText({ title: '──────────', is_separator: true });
             }
         }
 
         // Footer actions
-        await client.addText({ title: '─────────────────', is_separator: true });
+        await client.addText({ title: '──────────', is_separator: true });
 
         await client.addAction({
-            title: '🔄 刷新',
+            title: '刷新',
             onClick: () => {
                 console.log('[TrayManager] Refresh clicked');
                 void this.updateTray();
@@ -117,12 +113,10 @@ export class TrayManager {
         });
 
         await client.addAction({
-            title: '❌ 退出',
-            key_equivalent: 'q',
+            title: '隐藏',
             onClick: async () => {
-                console.log('[TrayManager] Exit clicked');
+                console.log('[TrayManager] Hide clicked');
                 await this.cleanup();
-                process.exit(0);
             }
         });
     }
