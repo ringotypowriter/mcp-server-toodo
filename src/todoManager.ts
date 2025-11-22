@@ -229,4 +229,36 @@ export class TodoManager extends EventEmitter {
             throw error;
         }
     }
+
+    async clearVisibleTodos(): Promise<void> {
+        await this.ensureDir();
+        const files = await fs.readdir(this.baseDir);
+        const now = Date.now();
+        let changed = false;
+
+        for (const file of files) {
+            if (!file.endsWith('.md')) continue;
+
+            const fullPath = path.join(this.baseDir, file);
+
+            try {
+                const content = await fs.readFile(fullPath, 'utf-8');
+                const nameMatch = content.match(/^# (.+)$/m);
+                const name = nameMatch ? nameMatch[1]!.trim() : file.replace('.md', '').replace(/_/g, ' ');
+                const todo = this.parseTodo(content, name);
+
+                // Delete only non-expired (i.e. currently visible) todos
+                if (now <= todo.expiresAt) {
+                    await fs.unlink(fullPath);
+                    changed = true;
+                }
+            } catch {
+                // Ignore invalid files
+            }
+        }
+
+        if (changed) {
+            this.emit('change');
+        }
+    }
 }
