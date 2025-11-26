@@ -1,3 +1,4 @@
+import os from "node:os";
 import TrayKit, { type TrayClient } from "traykit-bindings";
 import { TodoManager, type Todo } from "./todoManager.js";
 
@@ -93,6 +94,12 @@ export class TrayManager {
     }
   }
 
+  private supportsSfSymbols(): boolean {
+    const release = os.release();
+    const major = parseInt(release.split(".")[0] || "0", 10);
+    return major >= 25;
+  }
+
   private async populateMenu(
     client: TrayClient,
     todos: Todo[],
@@ -110,10 +117,20 @@ export class TrayManager {
       });
 
       // Display steps
+      const useSfSymbols = this.supportsSfSymbols();
+
       if (todo.steps.length > 0) {
         for (const step of todo.steps) {
-          const icon = step.completed ? "[✓]" : "[ ]";
-          await client.addText({ title: `  ${icon} ${step.description}` });
+          if (useSfSymbols) {
+            const symbol = step.completed ? "checkmark.circle" : "circle";
+            await client.addText({
+              title: `  ${step.description}`,
+              sf_symbol_name: symbol,
+            });
+          } else {
+            const icon = step.completed ? "[✓]" : "[ ]";
+            await client.addText({ title: `  ${icon} ${step.description}` });
+          }
         }
       } else {
         await client.addText({ title: "  (暂无步骤)" });
